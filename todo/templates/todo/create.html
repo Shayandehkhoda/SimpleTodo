@@ -1,0 +1,18 @@
+{% extends "todo/base.html" %}
+
+{% block title %}Create{% endblock %}
+
+
+{% block content %}
+<h3>Create Todo</h3><hr>
+
+<form method="post" class="post-form">
+{% csrf_token %}
+{{form.as_p}}    
+<input type="submit" value="create">
+
+
+</form>
+
+
+{% endblock %}

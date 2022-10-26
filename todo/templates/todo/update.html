@@ -1,0 +1,17 @@
+{% extends "todo/base.html" %}
+
+{% block title %}Update{% endblock %}
+
+
+{% block content %}
+<h3>Update Todo</h3><hr>
+
+<form method="post" class="post-form">
+{% csrf_token %}
+{{form.as_p}}    
+<button type="submit" class="save btn btn-default">Update</button> 
+
+</form>
+
+
+{% endblock %}
