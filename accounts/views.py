@@ -12,12 +12,10 @@ def register(request):
         form = UserRegistrationForm()
         return render(request, 'accounts/register.html', {'form':form})
 
-    if request.method == 'POST':
+    else:
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
-            user = User.objects.create_user(cd['username'], cd['email'], cd['password'])
-            user.save()            
+            user = User.objects.create_user(**form.cleaned_data)
             messages.success(request, 'Registered', 'success')
             return redirect('todo:home')
         else:
@@ -28,11 +26,11 @@ def user_login(request):
         form = UserLoginForm()
         return render(request, 'accounts/login.html', {'form':form})
 
-    if request.method == 'POST':
+    else:
         form = UserLoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(request, username=cd['username'], password=cd['password'])
+            user = authenticate(request, **cd)
             if user:
                 login(request, user)
                 messages.success(request, 'Logged in', 'success')

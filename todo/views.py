@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse, request
 from .models import Todo
 from .forms import ToDoForm
-
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     all = Todo.objects.all()
@@ -33,7 +33,7 @@ def create(request):
         form = ToDoForm()
         return render(request, 'todo/create.html', {'form':form})
     
-    if request.method == 'POST':
+    else:
         if not request.user.is_authenticated:
             messages.error(request, 'Login First', 'warning')
             return redirect('accounts:login')  
@@ -45,23 +45,15 @@ def create(request):
         else:
             return HttpResponse(f'{form.errors}')
 
-
+@login_required(login_url='accounts:login')
 def update(request, todo_id):
     todo = get_object_or_404(Todo, id=todo_id)
     if request.method == 'GET':
-        if not request.user.is_authenticated:
-            messages.error(request, 'Login First', 'warning')
-            return redirect('accounts:login')  
         form = ToDoForm(instance=todo)
         return render(request, 'todo/update.html', {'form':form})
-    
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            messages.error(request, 'Login First', 'warning')
-            return redirect('accounts:login')   
+    else:
         form = ToDoForm(data=request.POST, instance=todo)
         if form.is_valid():
             form.save()
             messages.success(request, 'your todo updated successfully', 'success')
             return redirect('todo:detail', todo_id)
-    
